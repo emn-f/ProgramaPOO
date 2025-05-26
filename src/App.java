@@ -7,16 +7,17 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class App {
-
-    private static final ArrayList<Animal> animais = new ArrayList<>();
-    private static final ArrayList<Pessoa> pessoas = new ArrayList<>();
-    private static final ArrayList<Adocao> adocoes = new ArrayList<>();
-    private static final Scanner scanner = new Scanner(System.in);
-
-    public static void main(String[] args) {
-        cadastrarDadosIniciais();
-
+    
+    static ArrayList<Animal> animais = new ArrayList<>();
+    static ArrayList<Pessoa> pessoas = new ArrayList<>();
+    static ArrayList<Adocao> adocoes = new ArrayList<>();
+    static Scanner in = new Scanner(System.in);
+    
+    public static void main(String[] args) throws Exception {
         int opcao;
+        
+        cadastroBase();
+
         do {
             exibirMenuPrincipal();
             opcao = lerOpcao();
@@ -35,21 +36,21 @@ public class App {
                     listarAdocoes();
                     break;
                 case 5:
-                    System.out.println("Saindo do sistema. Até logo!");
+                    System.out.println("Bye");
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
         } while (opcao != 5);
 
-        scanner.close();
+        in.close();
     }
 
     private static void exibirMenuPrincipal() {
         System.out.println("\n--- Sistema de Adoção de Animais ---");
         System.out.println("1. Gerenciar Animais");
         System.out.println("2. Gerenciar Pessoas");
-        System.out.println("3. Registrar Adoção");
+        System.out.println("3. Adicionar Adoção");
         System.out.println("4. Listar Adoções");
         System.out.println("5. Sair");
         System.out.print("Escolha uma opção: ");
@@ -58,15 +59,15 @@ public class App {
     /**
      * Lê a opção numérica do usuário.
      * 
-     * @return O número da opção escolhida.
+     @return O número da opção escolhida.
      */
     private static int lerOpcao() {
-        while (!scanner.hasNextInt()) {
+        while (!in.hasNextInt()) {
             System.out.print("Entrada inválida. Digite um número: ");
-            scanner.next(); // Limpa o buffer
+            in.next(); // Limpa o buffer
         }
-        int opcao = scanner.nextInt();
-        scanner.nextLine(); // Consome a quebra de linha
+        int opcao = in.nextInt();
+        in.nextLine(); // Consome a quebra de linha
         return opcao;
     }
 
@@ -114,13 +115,13 @@ public class App {
 
     private static void cadastrarAnimal() {
         System.out.print("Digite o tipo (Cachorro/Gato): ");
-        String tipo = scanner.nextLine();
+        String tipo = in.nextLine();
         System.out.print("Digite o nome: ");
-        String nome = scanner.nextLine();
+        String nome = in.nextLine();
         System.out.print("Digite a idade: ");
         int idade = lerOpcao();
         System.out.print("Digite o porte (Pequeno/Médio/Grande): ");
-        String porte = scanner.nextLine();
+        String porte = in.nextLine();
 
         if (tipo.equalsIgnoreCase("Cachorro")) {
             animais.add(new Cachorro(nome, idade, porte, LocalDate.now()));
@@ -160,7 +161,7 @@ public class App {
 
     private static void buscarAnimalPorNome() {
         System.out.print("Digite o nome do animal para buscar: ");
-        String nomeBusca = scanner.nextLine();
+        String nomeBusca = in.nextLine();
         boolean encontrado = false;
 
         System.out.println("\n--- Resultado da Busca ---");
@@ -183,11 +184,11 @@ public class App {
 
     private static void alterarAnimal() {
         System.out.print("Digite o nome do animal para alterar: ");
-        String nomeBusca = scanner.nextLine();
+        String nomeBusca = in.nextLine();
         Animal animalParaAlterar = null;
 
         for (Animal animal : animais) {
-            if (animal.getNome().equalsIgnoreCase(nomeBusca) && !animal.isAdotado()) {
+            if (animal.getNome().equalsIgnoreCase(nomeBusca) && !animal.getAdotado()) {
                 animalParaAlterar = animal;
                 break;
             }
@@ -199,7 +200,7 @@ public class App {
         }
 
         System.out.print("Digite o novo nome (deixe em branco para não alterar): ");
-        String novoNome = scanner.nextLine();
+        String novoNome = in.nextLine();
         if (!novoNome.isEmpty()) {
             animalParaAlterar.setNome(novoNome);
         }
@@ -215,11 +216,11 @@ public class App {
 
     private static void removerAnimal() {
         System.out.print("Digite o nome do animal para remover: ");
-        String nomeBusca = scanner.nextLine();
+        String nomeBusca = in.nextLine();
         Animal animalParaRemover = null;
 
         for (Animal animal : animais) {
-            if (animal.getNome().equalsIgnoreCase(nomeBusca) && !animal.isAdotado()) {
+            if (animal.getNome().equalsIgnoreCase(nomeBusca) && !animal.getAdotado()) {
                 animalParaRemover = animal;
                 break;
             }
@@ -234,12 +235,13 @@ public class App {
     }
 
     private static void menuGerenciarPessoas() {
+        int opcao;
         System.out.println("\n--- Gerenciar Pessoas ---");
         System.out.println("1. Cadastrar Pessoa");
         System.out.println("2. Listar Pessoas");
         System.out.println("3. Voltar");
         System.out.print("Escolha uma opção: ");
-        int opcao = lerOpcao();
+        opcao = lerOpcao();
         switch (opcao) {
             case 1:
                 cadastrarPessoa();
@@ -254,11 +256,11 @@ public class App {
 
     private static void cadastrarPessoa() {
         System.out.print("Digite o nome da pessoa: ");
-        String nome = scanner.nextLine();
+        String nome = in.nextLine();
         System.out.print("Digite o CPF: ");
-        String cpf = scanner.nextLine();
+        String cpf = in.nextLine();
         System.out.print("Digite o telefone: ");
-        String telefone = scanner.nextLine();
+        String telefone = in.nextLine();
 
         pessoas.add(new Pessoa(nome, cpf, telefone));
         System.out.println("Pessoa cadastrada com sucesso!");
@@ -278,11 +280,11 @@ public class App {
     private static void registrarAdocao() {
         System.out.println("\n--- Registrar Nova Adoção ---");
         System.out.print("Digite o nome do animal a ser adotado: ");
-        String nomeAnimal = scanner.nextLine();
+        String nomeAnimal = in.nextLine();
 
         Animal animalParaAdotar = null;
         for (Animal animal : animais) {
-            if (animal.getNome().equalsIgnoreCase(nomeAnimal) && !animal.isAdotado()) {
+            if (animal.getNome().equalsIgnoreCase(nomeAnimal) && !animal.getAdotado()) {
                 animalParaAdotar = animal;
                 break;
             }
@@ -294,7 +296,7 @@ public class App {
         }
 
         System.out.print("Digite o CPF do adotante: ");
-        String cpfAdotante = scanner.nextLine();
+        String cpfAdotante = in.nextLine();
         Pessoa adotante = null;
         for (Pessoa pessoa : pessoas) {
             if (pessoa.getCpf().equals(cpfAdotante)) {
@@ -325,7 +327,7 @@ public class App {
         System.out.println("--------------------------------------------------------------------");
     }
 
-    private static void cadastrarDadosIniciais() {
+    private static void cadastroBase() {
         animais.add(new Cachorro("Rex", 3, "Médio", LocalDate.of(2024, 1, 10)));
         animais.add(new Cachorro("Bolinha", 5, "Pequeno", LocalDate.of(2024, 2, 15)));
         animais.add(new Gato("Mimi", 2, "Pequeno", LocalDate.of(2024, 3, 5)));
@@ -342,6 +344,5 @@ public class App {
         pessoas.add(new Pessoa("Fernanda Souza", "666.666.666-66", "4444-3333"));
         pessoas.add(new Pessoa("Gustavo Borges", "777.777.777-77", "3333-2222"));
         
-        System.out.println("Dados iniciais carregados para teste.");
     }
 }
