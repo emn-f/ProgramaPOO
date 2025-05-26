@@ -29,9 +29,13 @@ public class Pessoa implements Imprimivel {
         this.telefone = telefone;
     }
 
-    // SUBSTITUIR POR TOSTRING
+    @Override
+    public String toString() {
+        return "Pessoa{" +"nome='" + nome + '\'' +", cpf='" + cpf + '\'' +", telefone='" + telefone + '\'' +'}';
+    }
+
     @Override
     public void imprimirResumo() {
-        System.out.printf("| %-20s | %-15s | %-15s |%n", nome, cpf, telefone);
+        System.out.println("Nome: " + nome + ", CPF: " + cpf + "Telefone: " + telefone);
     }
 }
