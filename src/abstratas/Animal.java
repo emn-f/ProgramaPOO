@@ -1,16 +1,17 @@
 package abstratas;
 
 import interfaces.Imprimivel;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public abstract class Animal implements Imprimivel {
-
-    protected String nome;
-    protected int idade;
-    protected String especie;
-    protected String porte;
-    protected LocalDate dataEntrada;
-    protected boolean adotado;
+    private String nome;
+    private int idade;
+    private String especie;
+    private String porte;
+    private LocalDate dataEntrada;
+    private boolean adotado;
 
     public Animal(String nome, int idade, String especie, String porte, LocalDate dataEntrada) {
         this.nome = nome;
@@ -45,7 +46,15 @@ public abstract class Animal implements Imprimivel {
         return porte;
     }
 
-    public boolean isAdotado() {
+    public LocalDate getDataEntrada() {
+        return dataEntrada;
+    }
+
+    public void setDataEntrada(LocalDate dataEntrada) {
+        this.dataEntrada = dataEntrada;
+    }
+
+    public boolean getAdotado() {
         return adotado;
     }
 
@@ -54,8 +63,8 @@ public abstract class Animal implements Imprimivel {
     }
 
     @Override
-    public void imprimirResumo() {
-        System.out.printf("| %-15s | %-10s | %-3d | %-8s | %-10s |%n",
-                nome, especie, idade, porte, (adotado ? "Adotado" : "Disponível"));
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return "Nome: " + nome + ", Idade: " + idade + ", Espécie: " + especie +", Porte: " + porte + ", Data de Entrada: " + dataEntrada.format(formatter) +", Adotado: " + (adotado ? "Sim" : "Não");
     }
 }
