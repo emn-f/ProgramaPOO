@@ -9,7 +9,9 @@ public class Adocao implements Imprimivel {
     private Animal animal;
     private Pessoa adotante;
     private LocalDate dataAdocao;
-
+    
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    
     public Adocao(Animal animal, Pessoa adotante, LocalDate dataAdocao) {
         this.animal = animal;
         this.adotante = adotante;
@@ -25,10 +27,24 @@ public class Adocao implements Imprimivel {
         return adotante;
     }
 
+    public LocalDate getDataAdocao() {
+        return dataAdocao;
+    }
+
+    public void setDataAdocao(LocalDate dataAdocao) {
+        this.dataAdocao = dataAdocao;
+    }
+    
+    @Override
+    public String toString() {
+        return "Adocao{" +"animal=" + animal.getNome() +", adotante=" + adotante.getNome() +", dataAdocao=" + dataAdocao.format(formatter) +'}';
+    }
+
     @Override
     public void imprimirResumo() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        System.out.printf("| %-15s | %-10s | %-20s | %-15s |%n",
-                animal.getNome(), animal.getEspecie(), adotante.getNome(), dataAdocao.format(formatter));
+        System.out.println("Resumo da Adoção:");
+        System.out.println("Animal: " + animal.getNome());
+        System.out.println("Adotante: " + adotante.getNome());
+        System.out.println("Data da Adoção: " + dataAdocao.format(formatter));
     }
 }
