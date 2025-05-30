@@ -1,1 +1,5 @@
 bin
+.idea
+.vscode
+ProgramaPOO.iml
+out

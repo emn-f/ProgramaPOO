@@ -24,6 +24,10 @@ public class Pessoa implements Imprimivel {
     public String getCpf() {
         return cpf;
     }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
     
     public void setTelefone(String telefone) {
         this.telefone = telefone;
@@ -36,6 +40,6 @@ public class Pessoa implements Imprimivel {
 
     @Override
     public void imprimirResumo() {
-        System.out.println("Nome: " + nome + ", CPF: " + cpf + "Telefone: " + telefone);
+        System.out.println("Nome: " + nome + ", CPF: " + cpf + ", Telefone: " + telefone);
     }
 }

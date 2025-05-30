@@ -4,6 +4,8 @@ import entidades.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class App {
 
@@ -12,9 +14,170 @@ public class App {
     static ArrayList<Adocao> adocoes = new ArrayList<>();
     static Scanner in = new Scanner(System.in);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         cadastroBase();
-    
+        menu();
+    }
+
+    private static void menu() {
+        int opcao;
+
+        do {
+            System.out.println("\n--- MENU ---");
+            System.out.println("1. Cadastrar Animal");
+            System.out.println("2. Listar Animais Disponíveis");
+            System.out.println("3. Cadastrar Pessoa");
+            System.out.println("4. Realizar Adoção");
+            System.out.println("5. Listar Adoções");
+            System.out.println("6. Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = Integer.parseInt(in.nextLine());
+
+            switch (opcao) {
+                case 1:
+                    cadastrarAnimal();
+                    break;
+                case 2:
+                    listarAnimaisDisponiveis();
+                    break;
+                case 3:
+                    cadastrarPessoa();
+                    break;
+                case 4:
+                    realizarAdocao();
+                    break;
+                case 5:
+                    listarAdocoes();
+                    break;
+                case 6:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        } while (opcao != 6);
+    }
+
+    private static void cadastrarAnimal() {
+        System.out.print("Digite o tipo (1 - Cachorro / 2 - Gato): ");
+        int tipo = Integer.parseInt(in.nextLine());
+
+        System.out.print("Nome: ");
+        String nome = in.nextLine();
+
+        System.out.print("Idade: ");
+        int idade = Integer.parseInt(in.nextLine());
+
+        System.out.print("Porte (Pequeno/Médio/Grande): ");
+        String porte = in.nextLine();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        System.out.print("Data de entrada (DD/MM/AAAA): ");
+        LocalDate dataEntrada;
+        try {
+            dataEntrada = LocalDate.parse(in.nextLine(), formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("Data inválida. Utilize o formato DD/MM/AAAA.");
+            return;
+        }
+
+        if (tipo == 1) {
+            animais.add(new Cachorro(nome, idade, porte, dataEntrada));
+            System.out.println("Cachorro cadastrado com sucesso!");
+        } else if (tipo == 2) {
+            animais.add(new Gato(nome, idade, porte, dataEntrada));
+            System.out.println("Gato cadastrado com sucesso!");
+        } else {
+            System.out.println("Tipo inválido.");
+        }
+    }
+
+    private static void listarAnimaisDisponiveis() {
+        System.out.println("\n--- Animais Disponíveis ---");
+        boolean encontrou = false;
+        for (Animal animal : animais) {
+            if (!animal.getAdotado()) {
+                System.out.println(animal);
+                encontrou = true;
+            }
+        }
+        if (!encontrou) {
+            System.out.println("Nenhum animal disponível para adoção.");
+        }
+    }
+
+    private static void cadastrarPessoa() {
+        System.out.print("Nome: ");
+        String nome = in.nextLine();
+        System.out.print("CPF: ");
+        String cpf = in.nextLine();
+        System.out.print("Telefone: ");
+        String telefone = in.nextLine();
+
+        pessoas.add(new Pessoa(nome, cpf, telefone));
+        System.out.println("Pessoa cadastrada com sucesso!");
+    }
+
+    private static void realizarAdocao() {
+        System.out.print("Informe o CPF do adotante: ");
+        String cpf = in.nextLine();
+
+        cpf = cpf.replaceAll("[^\\d]", "");
+        Pessoa adotante = null;
+        for (Pessoa pessoa : pessoas) {
+            String cpfPessoa = pessoa.getCpf().replaceAll("[^\\d]", "");
+            if (cpfPessoa.equals(cpf)) {
+                adotante = pessoa;
+                break;
+            }
+        }
+
+        if (adotante == null) {
+            System.out.println("Pessoa não encontrada. Cadastre primeiro.");
+            return;
+        }
+
+        ArrayList<Animal> disponiveis = new ArrayList<>();
+        for (Animal animal : animais) {
+            if (!animal.getAdotado()) {
+                disponiveis.add(animal);
+            }
+        }
+
+        if (disponiveis.isEmpty()) {
+            System.out.println("Não há animais disponíveis para adoção.");
+            return;
+        }
+
+        System.out.println("\n--- Animais Disponíveis ---");
+        for (int i = 0; i < disponiveis.size(); i++) {
+            System.out.println((i + 1) + " - " + disponiveis.get(i));
+        }
+
+        System.out.print("Escolha o número do animal que deseja adotar: ");
+        int escolha = Integer.parseInt(in.nextLine());
+
+        if (escolha < 1 || escolha > disponiveis.size()) {
+            System.out.println("Escolha inválida.");
+            return;
+        }
+
+        Animal animalEscolhido = disponiveis.get(escolha - 1);
+
+        Adocao adocao = new Adocao(animalEscolhido, adotante, LocalDate.now());
+        adocoes.add(adocao);
+        System.out.println("Adoção realizada com sucesso!");
+    }
+
+    private static void listarAdocoes() {
+        System.out.println("\n--- Lista de Adoções ---");
+        if (adocoes.isEmpty()) {
+            System.out.println("Nenhuma adoção realizada.");
+        } else {
+            for (Adocao adocao : adocoes) {
+                System.out.println(adocao);
+            }
+        }
     }
 
     private static void cadastroBase() {
