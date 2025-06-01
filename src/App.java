@@ -1,5 +1,9 @@
 import abstratas.Animal;
-import entidades.*;
+
+import entidades.Adocao;
+import entidades.Cachorro;
+import entidades.Gato;
+import entidades.Pessoa;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,9 +80,18 @@ public class App {
         System.out.print("Porte (Pequeno/Médio/Grande): ");
         porte = in.nextLine();
 
-        System.out.print("Data de entrada (DD/MM/AAAA): ");
+        
+        while (true) {
+            System.out.print("Data de entrada (DD/MM/AAAA): ");
+            try {
+                dataEntrada = LocalDate.parse(in.nextLine(), formatter);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida. Utilize o formato DD/MM/AAAA.");
+            }
+        }
+        
         try {
-            dataEntrada = LocalDate.parse(in.nextLine(), formatter);
         } catch (DateTimeParseException e) {
             System.out.println("Data inválida. Utilize o formato DD/MM/AAAA.");
             return;
@@ -126,15 +139,19 @@ public class App {
     }
 
     private static void realizarAdocao() {
+        Integer escolha;
         String cpfAdotante;
+        
+        ArrayList<Animal> disponiveis = new ArrayList<>();
+        
         Pessoa adotante = null;
-        int escolha;
         Adocao adocao;
-         Animal animalEscolhido;
-        System.out.print("Informe o CPF do adotante: ");
-        cpfAdotante = in.nextLine();
+        Animal animalEscolhido;
 
-        cpfAdotante = cpfAdotante.replaceAll("[^\\d]", "");
+
+        System.out.print("Informe o CPF do adotante: ");
+        cpfAdotante = in.nextLine().replaceAll("[^\\d]", "");
+
         for (Pessoa pessoa : pessoas) {
             String cpfPessoa = pessoa.getCpf().replaceAll("[^\\d]", "");
             if (cpfPessoa.equals(cpfAdotante)) {
@@ -148,7 +165,6 @@ public class App {
             return;
         }
 
-        ArrayList<Animal> disponiveis = new ArrayList<>();
         for (Animal animal : animais) {
             if (!animal.getAdotado()) {
                 disponiveis.add(animal);
