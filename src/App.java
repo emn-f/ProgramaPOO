@@ -20,7 +20,7 @@ public class App {
     }
 
     private static void menu() {
-        int opcao;
+        Integer opcao;
 
         do {
             System.out.println("\n--- MENU ---");
@@ -59,21 +59,24 @@ public class App {
     }
 
     private static void cadastrarAnimal() {
+        Integer tipo, idade;
+        String nome, porte;
+        LocalDate dataEntrada;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         System.out.print("Digite o tipo (1 - Cachorro / 2 - Gato): ");
-        int tipo = Integer.parseInt(in.nextLine());
+        tipo = Integer.parseInt(in.nextLine());
 
         System.out.print("Nome: ");
-        String nome = in.nextLine();
+        nome = in.nextLine();
 
         System.out.print("Idade: ");
-        int idade = Integer.parseInt(in.nextLine());
+        idade = Integer.parseInt(in.nextLine());
 
         System.out.print("Porte (Pequeno/Médio/Grande): ");
-        String porte = in.nextLine();
+        porte = in.nextLine();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         System.out.print("Data de entrada (DD/MM/AAAA): ");
-        LocalDate dataEntrada;
         try {
             dataEntrada = LocalDate.parse(in.nextLine(), formatter);
         } catch (DateTimeParseException e) {
@@ -93,40 +96,48 @@ public class App {
     }
 
     private static void listarAnimaisDisponiveis() {
-        System.out.println("\n--- Animais Disponíveis ---");
         boolean encontrou = false;
+        
+        System.out.println("\n--- Animais Disponíveis ---");
         for (Animal animal : animais) {
             if (!animal.getAdotado()) {
                 System.out.println(animal);
                 encontrou = true;
             }
         }
+
         if (!encontrou) {
             System.out.println("Nenhum animal disponível para adoção.");
         }
     }
 
     private static void cadastrarPessoa() {
+        String nome, cpf, telefone;
+
         System.out.print("Nome: ");
-        String nome = in.nextLine();
+        nome = in.nextLine();
         System.out.print("CPF: ");
-        String cpf = in.nextLine();
+        cpf = in.nextLine();
         System.out.print("Telefone: ");
-        String telefone = in.nextLine();
+        telefone = in.nextLine();
 
         pessoas.add(new Pessoa(nome, cpf, telefone));
         System.out.println("Pessoa cadastrada com sucesso!");
     }
 
     private static void realizarAdocao() {
-        System.out.print("Informe o CPF do adotante: ");
-        String cpf = in.nextLine();
-
-        cpf = cpf.replaceAll("[^\\d]", "");
+        String cpfAdotante;
         Pessoa adotante = null;
+        int escolha;
+        Adocao adocao;
+         Animal animalEscolhido;
+        System.out.print("Informe o CPF do adotante: ");
+        cpfAdotante = in.nextLine();
+
+        cpfAdotante = cpfAdotante.replaceAll("[^\\d]", "");
         for (Pessoa pessoa : pessoas) {
             String cpfPessoa = pessoa.getCpf().replaceAll("[^\\d]", "");
-            if (cpfPessoa.equals(cpf)) {
+            if (cpfPessoa.equals(cpfAdotante)) {
                 adotante = pessoa;
                 break;
             }
@@ -155,16 +166,16 @@ public class App {
         }
 
         System.out.print("Escolha o número do animal que deseja adotar: ");
-        int escolha = Integer.parseInt(in.nextLine());
+        escolha = Integer.parseInt(in.nextLine());
 
         if (escolha < 1 || escolha > disponiveis.size()) {
             System.out.println("Escolha inválida.");
             return;
         }
 
-        Animal animalEscolhido = disponiveis.get(escolha - 1);
+        animalEscolhido = disponiveis.get(escolha - 1);
 
-        Adocao adocao = new Adocao(animalEscolhido, adotante, LocalDate.now());
+        adocao = new Adocao(animalEscolhido, adotante, LocalDate.now());
         adocoes.add(adocao);
         System.out.println("Adoção realizada com sucesso!");
     }
@@ -189,13 +200,13 @@ public class App {
         animais.add(new Gato("Garfield", 6, "Médio", LocalDate.of(2024, 5, 8)));
         animais.add(new Cachorro("Princesa", 2, "Pequeno", LocalDate.of(2024, 5, 12)));
 
-        pessoas.add(new Pessoa("Ana Silva", "111.111.111-11", "9999-8888"));
-        pessoas.add(new Pessoa("Bruno Costa", "222.222.222-22", "8888-7777"));
-        pessoas.add(new Pessoa("Carlos Dias", "333.333.333-33", "7777-6666"));
-        pessoas.add(new Pessoa("Daniela Reis", "444.444.444-44", "6666-5555"));
-        pessoas.add(new Pessoa("Eduardo Lima", "555.555.555-55", "5555-4444"));
-        pessoas.add(new Pessoa("Fernanda Souza", "666.666.666-66", "4444-3333"));
-        pessoas.add(new Pessoa("Gustavo Borges", "777.777.777-77", "3333-2222"));
+        pessoas.add(new Pessoa("Ana Silva", "50286060051", "9439310755"));
+        pessoas.add(new Pessoa("Bruno Costa", "50286060051", "8236220107"));
+        pessoas.add(new Pessoa("Carlos Dias", "86002254005", "4323295243"));
+        pessoas.add(new Pessoa("Daniela Reis", "86125554007", "9826288573"));
+        pessoas.add(new Pessoa("Eduardo Lima", "69816445093", "2721416296"));
+        pessoas.add(new Pessoa("Fernanda Souza", "23231037093", "8523425221"));
+        pessoas.add(new Pessoa("Gustavo Borges", "41066219087", "7932895486"));
 
     }
 }
