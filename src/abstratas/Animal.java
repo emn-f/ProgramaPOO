@@ -6,12 +6,7 @@ import interfaces.Imprimivel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Classe abstrata que representa um animal no sistema de adoção.
- * Serve como base para classes concretas como Cachorro e Gato.
- * Armazena informações comuns a todos os animais, como nome, idade, espécie,
- * porte, data de entrada e se já foi adotado.
- */
+//  Classe abstrata que representa um animal no sistema de adoção.
 public abstract class Animal implements Imprimivel {
     private String nome;
     private int idade;
