@@ -1,30 +1,46 @@
 package entidades;
+
+// Importações da interface, da classe abstrata e outras classes para formatação das datas
 import interfaces.Imprimivel;
+import abstratas.Animal;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import abstratas.Animal;
+//  Class representa o registro de uma adoção de animal, armazenando informações sobre o animal adotado, a pessoa adotante e a data da adoção. * Armazena o animal adotado, a pessoa adotante e a data da adoção.
 
 public class Adocao implements Imprimivel {
+
     private Animal animal;
     private Pessoa adotante;
     private LocalDate dataAdocao;
-    
+
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    
+
+    // Construtor da classe Adocao que recebe um animal, um adotante, a data da
+    // adoção e define o animal como adotado.
     public Adocao(Animal animal, Pessoa adotante, LocalDate dataAdocao) {
         this.animal = animal;
         this.adotante = adotante;
         this.dataAdocao = dataAdocao;
-        this.animal.setAdotado(true); 
+        this.animal.setAdotado(true);
     }
 
+    // Getters e Setters para acessar e modificar os atributos da classe
     public Animal getAnimal() {
         return animal;
     }
 
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
+    }
+
     public Pessoa getAdotante() {
         return adotante;
+    }
+
+    public void setAdotante(Pessoa adotante) {
+        this.adotante = adotante;
     }
 
     public LocalDate getDataAdocao() {
@@ -34,12 +50,15 @@ public class Adocao implements Imprimivel {
     public void setDataAdocao(LocalDate dataAdocao) {
         this.dataAdocao = dataAdocao;
     }
-    
+
+    // Método toString que retorna uma representação em string da adoção.
     @Override
     public String toString() {
-        return "Adocao: " +"Animal=" + animal.getNome() +", Adotante=" + adotante.getNome() +", Data de adoção=" + dataAdocao.format(FORMATTER);
+        return "Adocao: " + "Animal=" + animal.getNome() + ", Adotante=" + adotante.getNome() + ", Data de adoção="
+                + dataAdocao.format(FORMATTER);
     }
 
+    // Imprime um resumo da adoção.
     @Override
     public void imprimirResumo() {
         System.out.println("Resumo da Adoção:");
