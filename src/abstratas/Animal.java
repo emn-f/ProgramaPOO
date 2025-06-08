@@ -46,6 +46,10 @@ public abstract class Animal implements Imprimivel {
         return porte;
     }
 
+    public void setPorte(String porte) {
+        this.porte = porte;
+    }
+
     public LocalDate getDataEntrada() {
         return dataEntrada;
     }

@@ -29,13 +29,17 @@ public class Pessoa implements Imprimivel {
         this.cpf = cpf;
     }
     
+    public String getTelefone() {
+        return telefone;
+    }
+
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
 
     @Override
     public String toString() {
-        return "Pessoa{" +"nome='" + nome + '\'' +", cpf='" + cpf + '\'' +", telefone='" + telefone + '\'' +'}';
+        return "Nome: " + nome + ", CPF: " + cpf + ", Telefone: " + telefone;
     }
 
     @Override
