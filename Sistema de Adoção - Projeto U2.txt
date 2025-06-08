@@ -1,0 +1,857 @@
+Alunos:
+
+Emanuel Ferreira
+Filipe Pinho
+Kauã Araujo
+Marcio Ventura
+Matheus Brito
+Rodrigo dos Santos
+
+--------------
+
+// Programa.java
+
+package aplicacao;
+
+import abstratas.Animal;
+import entidades.Adocao;
+import entidades.Cachorro;
+import entidades.Gato;
+import entidades.Pessoa;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class Programa {
+
+    static ArrayList<Animal> animais = new ArrayList<>();
+    static ArrayList<Pessoa> pessoas = new ArrayList<>();
+    static ArrayList<Adocao> adocoes = new ArrayList<>();
+    static Scanner in = new Scanner(System.in);
+
+    // Método principal que inicia o programa
+    public static void main(String[] args){
+        cadastroBase();
+        menu();
+    }
+
+    // Método responsável por exibir o menu e gerenciar as opções
+    private static void menu() {
+        Integer opcao;
+
+        do {
+            System.out.println("\n--- MENU ---");
+            System.out.println("1. Cadastrar Animal");
+            System.out.println("2. Listar Animais Disponíveis");
+            System.out.println("3. Cadastrar Pessoa");
+            System.out.println("4. Realizar Adoção");
+            System.out.println("5. Listar Adoções");
+            System.out.println("6. Alterar Dados do Animal");
+            System.out.println("7. Alterar Dados da Pessoa");
+            System.out.println("8. Listar Pessoas");
+            System.out.println("9. Remover Pessoa");
+            System.out.println("10. Remover Animal");
+            System.out.println("11. Buscar Animal por Nome");
+            System.out.println("12. Buscar Pessoa por CPF");
+            System.out.println("13. Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = Integer.parseInt(in.nextLine());
+
+            switch (opcao) {
+                case 1:
+                    cadastrarAnimal();
+                    break;
+                case 2:
+                    listarAnimaisDisponiveis();
+                    break;
+                case 3:
+                    cadastrarPessoa();
+                    break;
+                case 4:
+                    realizarAdocao();
+                    break;
+                case 5:
+                    listarAdocoes();
+                    break;
+                case 6:
+                    alterarDadosAnimal();
+                    break;
+                case 7:
+                    alterarDadosPessoa();
+                    break;
+                case 8:
+                    listarPessoas();
+                    break;
+                case 9:
+                    removerPessoas();
+                    break;
+                case 10:
+                    removerAnimal();
+                    break;
+                case 11:
+                    buscarAnimalPorNome();
+                    break;
+                case 12:
+                    buscarPessoaPorCpf();
+                    break;
+                case 13:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        } while (opcao != 13);
+    }
+
+    // Método responsável por cadastrar um novo animal
+    private static void cadastrarAnimal() {
+        Integer tipo, idade;
+        String nome, porte;
+        LocalDate dataEntrada;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        System.out.print("Digite o tipo (1 - Cachorro / 2 - Gato): ");
+        tipo = Integer.parseInt(in.nextLine());
+
+        System.out.print("Nome: ");
+        nome = in.nextLine();
+
+        System.out.print("Idade: ");
+        idade = Integer.parseInt(in.nextLine());
+
+        System.out.print("Porte (Pequeno/Médio/Grande): ");
+        porte = in.nextLine();
+
+        while (true) {
+            System.out.print("Data de entrada (DD/MM/AAAA): ");
+            try {
+                dataEntrada = LocalDate.parse(in.nextLine(), formatter);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida. Utilize o formato DD/MM/AAAA.");
+            }
+        }
+        
+
+        if (tipo == 1) {
+            animais.add(new Cachorro(nome, idade, porte, dataEntrada));
+            System.out.println("Cachorro cadastrado com sucesso!");
+        } else if (tipo == 2) {
+            animais.add(new Gato(nome, idade, porte, dataEntrada));
+            System.out.println("Gato cadastrado com sucesso!");
+        } else {
+            System.out.println("Tipo inválido.");
+        }
+    }
+
+    // Método responsável por alterar os dados de um animal cadastrado
+    private static void alterarDadosAnimal() {
+        Integer escolha, novaIdade;
+        Animal animalEscolhido;
+        String novoNome, idadeStr, novoPorte;
+
+        System.out.println("\n--- Alterar Dados do Animal ---");
+        
+
+        // Sai do métedo se não houver animais cadastrados
+        if (animais.isEmpty()) {
+            System.out.println("Não existem animais cadastrados");
+        return;
+        }
+
+        // Lista os animais cadastrados e pergunta ao usuário qual ele quer alterar
+        for (int i = 0; i < animais.size(); i++) {
+            System.out.println((i + 1) + " - " + animais.get(i));
+        }
+
+        System.out.print("\n Escolha o número do animal que deseja alterar: ");
+        try {
+            escolha = Integer.parseInt(in.nextLine());
+            if (escolha < 1 || escolha > animais.size()) {
+                System.out.println("Número inválido.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Por favor, digite um número válido.");
+            return;
+        }
+        // Se o animal escolhido já foi adotado, não permite a alteração
+        animalEscolhido = animais.get(escolha - 1);
+        if (animalEscolhido.getAdotado()) {
+            System.out.println("\n Não é possível alterar os dados de um animal já adotado.");
+            return;
+        }
+
+        // Exibe os dados atuais do animal
+        System.out.println("\n Dados atuais do animal:");
+        System.out.println(animalEscolhido);
+        
+        // Pergunta ao usuário quais dados ele quer alterar
+        System.out.println("\n Digite os novos dados (ou pressione Enter para manter o valor atual):");
+        System.out.print("Novo nome: ");
+        novoNome = in.nextLine();
+        if (!novoNome.isEmpty()) {
+            animalEscolhido.setNome(novoNome);
+        }
+        System.out.print("Nova idade: ");
+        idadeStr = in.nextLine();
+        if (!idadeStr.isEmpty()) {
+            try {
+                novaIdade = Integer.parseInt(idadeStr);
+                if (novaIdade >= 0) {
+                    animalEscolhido.setIdade(novaIdade);
+                } else {
+                    System.out.println("Idade inválida. Idade atual será mantida");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Idade inválida. Idade atual será mantida");
+            }
+        }
+
+        System.out.print("Novo porte (Pequeno/Médio/Grande) [" + animalEscolhido.getPorte() + "]: ");
+        novoPorte = in.nextLine();
+        if (!novoPorte.isEmpty()) {
+            if (novoPorte.equalsIgnoreCase("Pequeno") || 
+                novoPorte.equalsIgnoreCase("Médio") || 
+                novoPorte.equalsIgnoreCase("Grande")) {
+                animalEscolhido.setPorte(novoPorte);
+            } else {
+                System.out.println("Porte inválido. Porte atual será mantido.");
+            }
+        }
+
+        System.out.println("\nDados alterados com sucesso!");
+        System.out.println("Novos dados do animal:");
+        System.out.println(animalEscolhido);
+    }
+
+    // Método responsável por listar os animais disponíveis para adoção
+    private static void listarAnimaisDisponiveis() {
+        boolean encontrou = false;
+        
+        // Exibe cada animal cadastrado. Se não houver, exibe uma mensagem informando que não há animais disponíveis.
+        System.out.println("\n--- Animais Disponíveis ---");
+        for (Animal animal : animais) {
+            if (!animal.getAdotado()) {
+                System.out.println(animal);
+                encontrou = true;
+            }
+        }
+        if (!encontrou) {
+            System.out.println("Nenhum animal disponível para adoção.");
+        }
+    }
+
+    // Método responsável por cadastrar uma nova pessoa
+    private static void cadastrarPessoa() {
+        String nome, cpf, telefone;
+        
+        System.out.print("Nome: ");
+        nome = in.nextLine();
+        System.out.print("CPF: ");
+        cpf = in.nextLine();
+        System.out.print("Telefone: ");
+        telefone = in.nextLine();
+        
+        pessoas.add(new Pessoa(nome, cpf, telefone));
+        System.out.println("Pessoa cadastrada com sucesso!");
+    }
+    
+    // Método responsável por alterar os dados de uma pessoa cadastrada
+    private static void alterarDadosPessoa() {
+        Integer escolha;
+        Pessoa pessoaEscolhida;
+        boolean temAdocao, cpfExiste;
+        String novoCpf, novoTelefone;
+
+        System.out.println("\n--- Alterar Dados da Pessoa ---");
+        
+        // Verifica se há pessoas cadastradas antes de prosseguir
+        if (pessoas.isEmpty()) {
+            System.out.println("Não existem pessoas cadastradas");
+            return;
+        }
+        // Lista as pessoas cadastradas e pergunta ao usuário qual ele quer alterar
+        for (int i = 0; i < pessoas.size(); i++) {
+            System.out.println((i + 1) + " - " + pessoas.get(i));
+        }
+        
+        System.out.print("Escolha o número da pessoa que deseja alterar: ");
+        
+        try {
+            escolha = Integer.parseInt(in.nextLine());
+            if (escolha < 1 || escolha > pessoas.size()) {
+                System.out.println("Número inválido.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Por favor, digite um número válido.");
+            return;
+        }
+
+        pessoaEscolhida = pessoas.get(escolha - 1);
+
+        // Verifica se a pessoa tem adoções antes de permitir alterações
+        temAdocao = adocoes.stream().anyMatch(adocao -> adocao.getAdotante().getCpf().equals(pessoaEscolhida.getCpf()));
+
+        // Na inclusão de CPF, verifica se já existe outro cadastrado
+        if (!temAdocao) {
+            System.out.print("Novo CPF: ");
+            novoCpf = in.nextLine();
+            if (!novoCpf.isEmpty()) {
+                cpfExiste = pessoas.stream().anyMatch(p -> p.getCpf().equals(novoCpf) && p != pessoaEscolhida);               
+                if (cpfExiste) {
+                    System.out.println("CPF já cadastrado, mantendo CPF atual");
+                } else {
+                    pessoaEscolhida.setCpf(novoCpf);
+                }
+            }
+        } else {
+            System.out.println("CPF não pode ser alterado pois a pessoa possui adoções registradas");
+        }
+
+        System.out.print("Novo telefone: ");
+        novoTelefone = in.nextLine();
+        if (!novoTelefone.isEmpty()) {
+            pessoaEscolhida.setTelefone(novoTelefone);
+        }
+
+        System.out.println("\nDados alterados com sucesso!");
+        System.out.println("Novos dados da pessoa:");
+        System.out.println(pessoaEscolhida);
+
+    }
+
+    // Método responsável por listar as pessoas cadastradas
+    private static void listarPessoas() {
+        System.out.println("\n --- Lista de Pessoas ---");
+        if (pessoas.isEmpty()) {
+            System.out.println("Nenhuma pessoa cadastrada.");
+        } else {
+            for (Pessoa pessoa : pessoas) {
+                System.out.println(pessoa);
+            }
+        }
+    }
+
+    // Método responsável por buscar um animal pelo nome
+    private static void buscarAnimalPorNome() {
+        System.out.println("\n--- Digite o nome do animal ---");
+        String nomeAnimal = in.nextLine().trim();
+
+        for (Animal animal : animais) {
+            if (animal.getNome().equalsIgnoreCase(nomeAnimal)) {
+                System.out.println("Animal encontrado: " + animal);
+                return;
+            }
+        }
+
+        System.out.println("Nenhum animal encontrado com o nome: " + nomeAnimal);
+    }
+
+    // Método responsável por buscar uma pessoa pelo CPF
+    private static void buscarPessoaPorCpf() {
+        String cpfString;
+
+        System.out.println("\n--- Digite o CPF (apenas os números) ---");
+        cpfString = in.nextLine().trim();
+
+        for (Pessoa pessoa : pessoas) {
+            if (pessoa.getCpf().equals(cpfString)) {
+                System.out.println("Pessoa encontrada: " + pessoa);
+                return;
+            }
+        }
+
+        System.out.println("Nenhuma pessoa encontrada com este CPF: " + cpfString);
+    }
+
+    // Método responsável por remover uma pessoa cadastrada
+    private static void removerPessoas() {
+        Integer escolha;
+        Pessoa pessoaEscolhida;
+        boolean temAdocao;
+        String confirmacao;
+        
+        System.out.println("\n--- Remover Pessoa ---");
+
+        // Verifica se há pessoas cadastradas antes de prosseguir
+        if (pessoas.isEmpty()) {
+            System.out.println("Não existem pessoas cadastradas");
+            return;
+        }
+
+        // Lista as pessoas cadastradas e pergunta ao usuário qual ele quer remover
+        for (int i = 0; i < pessoas.size(); i++) {
+            System.out.println((i + 1) + " - " + pessoas.get(i));
+        }
+
+        System.out.print("Escolha o número da pessoa que deseja remover: ");
+        try {
+            escolha = Integer.parseInt(in.nextLine());
+            if (escolha < 1 || escolha > pessoas.size()) {
+                System.out.println("Número inválido.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Por favor, digite um número válido.");
+            return;
+        }
+
+        pessoaEscolhida = pessoas.get(escolha - 1);
+
+        // Se a pessoa escolhida tem adoções registradas, não permite a remoção
+        temAdocao = adocoes.stream()
+            .anyMatch(adocao -> adocao.getAdotante().getCpf().equals(pessoaEscolhida.getCpf()));
+
+        if (temAdocao) {
+            System.out.println("Não é possível remover a pessoa pois ela possui adoções registradas.");
+            return;
+        }
+
+        // Confirmação antes de remover a pessoa
+        System.out.print("\n Tem certeza que deseja remover a pessoa " + pessoaEscolhida.getNome() + "? (S/N): ");
+        confirmacao = in.nextLine().trim().toUpperCase();
+
+        if (confirmacao.equalsIgnoreCase("S")) {
+            pessoas.remove(pessoaEscolhida);
+            System.out.println("\n Pessoa removida com sucesso!");
+        } else {
+            System.out.println("\n Remoção cancelada.");
+        }
+    }
+
+    // Método responsável por remover um animal cadastrado    
+    private static void removerAnimal() {
+        Integer escolha;
+        Animal animalEscolhido;
+        boolean temAdocao;
+        String confirmacao;
+
+        System.out.println("\n--- Remover Animal ---");
+
+        if (animais.isEmpty()) {
+            System.out.println("\n Não existem animais cadastradas");
+            return;
+        }
+
+        for (int i = 0; i < animais.size(); i++) {
+            System.out.println((i + 1) + " - " + animais.get(i));
+        }
+
+        // Lista os animais cadastrados e pergunta ao usuário qual ele quer remover
+        System.out.print("\n Escolha o número da animais que deseja remover: ");
+        try {
+            escolha = Integer.parseInt(in.nextLine());
+            if (escolha < 1 || escolha > animais.size()) {
+                System.out.println("Número inválido");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Por favor, digite um número válido");
+            return;
+        }
+
+        // Se o animal escolhido já foi adotado, não permite a remoção
+        animalEscolhido = animais.get(escolha - 1);
+        temAdocao = adocoes.stream()
+            .anyMatch(adocao -> adocao.getAnimal().getAdotado());
+
+        if (temAdocao) {
+            System.out.println("Não é possível remover o animal pois ele já foi adotado");
+            return;
+        }
+
+        System.out.print("Tem certeza que deseja remover o animal " + animalEscolhido.getNome() + "? (S/N): ");
+        confirmacao = in.nextLine().trim().toUpperCase();
+
+        if (confirmacao.equalsIgnoreCase("S")) {
+            animais.remove(animalEscolhido);
+            System.out.println("Animal removido com sucesso!");
+        } else {
+            System.out.println("Remoção cancelada.");
+        }
+    }
+
+    // Método responsável por realizar a adoção de um animal
+    private static void realizarAdocao() {
+        Integer escolha;
+        String cpfAdotante, cpfPessoa;
+        
+        ArrayList<Animal> disponiveis = new ArrayList<>();
+        
+        Pessoa adotante = null;
+        Adocao adocao;
+        Animal animalEscolhido;
+
+        
+        System.out.print("\n Informe o CPF do adotante: ");
+        cpfAdotante = in.nextLine().replaceAll("[^\\d]", "");
+        // Verifica se o CPF informado é válido
+        for (Pessoa pessoa : pessoas) {
+            cpfPessoa = pessoa.getCpf().replaceAll("[^\\d]", "");
+            if (cpfPessoa.equals(cpfAdotante)) {
+                adotante = pessoa;
+                break;
+            }
+        }
+        // Se não encontrar a pessoa, pede para o usuário cadastrar primeiro
+        if (adotante == null) {
+            System.out.println("\n Pessoa não encontrada, cadastre primeiro");
+            return;
+        }
+
+        // Verifica se há animais disponíveis para adoção
+        for (Animal animal : animais) {
+            if (!animal.getAdotado()) {
+                disponiveis.add(animal);
+            }
+        }
+
+        if (disponiveis.isEmpty()) {
+            System.out.println("Não há animais disponíveis para adoção");
+            return;
+        }
+        // Lista os animais disponíveis para adoção
+        System.out.println("\n--- Animais Disponíveis ---");
+        for (int i = 0; i < disponiveis.size(); i++) {
+            System.out.println((i + 1) + " - " + disponiveis.get(i));
+        }
+        // Pede ao usuário para escolher um animal e realiza a adoção
+        System.out.print("Escolha o número do animal que deseja adotar: ");
+        escolha = Integer.parseInt(in.nextLine());
+
+        if (escolha < 1 || escolha > disponiveis.size()) {
+            System.out.println("Escolha inválida");
+            return;
+        }
+
+        animalEscolhido = disponiveis.get(escolha - 1);
+
+        adocao = new Adocao(animalEscolhido, adotante, LocalDate.now());
+        adocoes.add(adocao);
+        System.out.println("\n Adoção realizada com sucesso!");
+    }
+
+    // Método responsável por listar as adoções realizadas
+    private static void listarAdocoes() {
+        System.out.println("\n--- Lista de Adoções ---");
+        if (adocoes.isEmpty()) {
+            System.out.println("Nenhuma adoção realizada.");
+        } else {
+            for (Adocao adocao : adocoes) {
+                System.out.println(adocao);
+            }
+        }
+    }
+
+    // Método responsável por cadastrar uma base de dados inicial
+    private static void cadastroBase() {
+        animais.add(new Cachorro("Rex", 3, "Médio", LocalDate.of(2024, 1, 10)));
+        animais.add(new Cachorro("Bolinha", 5, "Pequeno", LocalDate.of(2024, 2, 15)));
+        animais.add(new Gato("Mimi", 2, "Pequeno", LocalDate.of(2024, 3, 5)));
+        animais.add(new Gato("Frajola", 4, "Médio", LocalDate.of(2024, 3, 20)));
+        animais.add(new Cachorro("Thor", 1, "Grande", LocalDate.of(2024, 4, 1)));
+        animais.add(new Gato("Garfield", 6, "Médio", LocalDate.of(2024, 5, 8)));
+        animais.add(new Cachorro("Princesa", 2, "Pequeno", LocalDate.of(2024, 5, 12)));
+
+        pessoas.add(new Pessoa("Ana Silva", "50286060051", "9439310755"));
+        pessoas.add(new Pessoa("Bruno Costa", "50286060053", "8236220107"));
+        pessoas.add(new Pessoa("Carlos Dias", "86002254005", "4323295243"));
+        pessoas.add(new Pessoa("Daniela Reis", "86125554007", "9826288573"));
+        pessoas.add(new Pessoa("Eduardo Lima", "69816445093", "2721416296"));
+        pessoas.add(new Pessoa("Fernanda Souza", "23231037093", "8523425221"));
+        pessoas.add(new Pessoa("Gustavo Borges", "41066214087", "7932895486"));
+
+    }
+}
+
+--------------
+
+// Animal.java
+
+package abstratas;
+
+// Importa a interface para impressão de resumo
+import interfaces.Imprimivel;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+//  Classe abstrata que representa um animal no sistema de adoção.
+public abstract class Animal implements Imprimivel {
+
+    // Atributos
+    private String nome;
+    private int idade;
+    private String especie;
+    private String porte;
+    private LocalDate dataEntrada;
+    private boolean adotado;
+
+    // Construtor
+    public Animal(String nome, int idade, String especie, String porte, LocalDate dataEntrada) {
+        this.nome = nome;
+        this.idade = idade;
+        this.especie = especie;
+        this.porte = porte;
+        this.dataEntrada = dataEntrada;
+        this.adotado = false;
+    }
+
+    // Getters e Setters
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
+    }
+
+    public String getEspecie() {
+        return especie;
+    }
+
+    public void setEspecie(String especie) {
+        this.especie = especie;
+    }
+
+    public String getPorte() {
+        return porte;
+    }
+
+    public void setPorte(String porte) {
+        this.porte = porte;
+    }
+
+    public LocalDate getDataEntrada() {
+        return dataEntrada;
+    }
+
+    public void setDataEntrada(LocalDate dataEntrada) {
+        this.dataEntrada = dataEntrada;
+    }
+
+    public boolean getAdotado() {
+        return adotado;
+    }
+
+    public void setAdotado(boolean adotado) {
+        this.adotado = adotado;
+    }
+
+    // Retorna os dados do animal
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return "Nome: " + nome + ", Idade: " + idade + ", Espécie: " + especie + ", Porte: " + porte
+                + ", Data de Entrada: " + dataEntrada.format(formatter) + ", Adotado: " + (adotado ? "Sim" : "Não");
+    }
+}
+
+
+--------------
+
+// Adoção.java
+
+package entidades;
+
+// Importações da interface, da classe abstrata Aniaml e outras classes para formatação das datas
+import interfaces.Imprimivel;
+import abstratas.Animal;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+// Classe representa o registro de uma adoção de animal. Armazena o animal adotado, a pessoa adotante e a data da adoção.
+
+public class Adocao implements Imprimivel {
+
+    // Atributos
+    private Animal animal;
+    private Pessoa adotante;
+    private LocalDate dataAdocao;
+
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    // Construtor
+    public Adocao(Animal animal, Pessoa adotante, LocalDate dataAdocao) {
+        this.animal = animal;
+        this.adotante = adotante;
+        this.dataAdocao = dataAdocao;
+        this.animal.setAdotado(true);
+    }
+
+    // Getters e Setters
+    public Animal getAnimal() {
+        return animal;
+    }
+
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
+    }
+
+    public Pessoa getAdotante() {
+        return adotante;
+    }
+
+    public void setAdotante(Pessoa adotante) {
+        this.adotante = adotante;
+    }
+
+    public LocalDate getDataAdocao() {
+        return dataAdocao;
+    }
+
+    public void setDataAdocao(LocalDate dataAdocao) {
+        this.dataAdocao = dataAdocao;
+    }
+
+    // Método toString que retorna os dados da adoção.
+    @Override
+    public String toString() {
+        return "Adocao: " + "Animal=" + animal.getNome() + ", Adotante=" + adotante.getNome() + ", Data de adoção="
+                + dataAdocao.format(FORMATTER);
+    }
+
+    // Imprime um resumo da adoção.
+    @Override
+    public void imprimirResumo() {
+        System.out.println("Resumo da Adoção:");
+        System.out.println("Animal: " + animal.getNome());
+        System.out.println("Adotante: " + adotante.getNome());
+        System.out.println("Data da Adoção: " + dataAdocao.format(FORMATTER));
+    }
+}
+
+
+--------------
+
+// Cachorro.java
+
+package entidades;
+
+import abstratas.Animal;
+import java.time.LocalDate;
+
+// Classe que representa um cachorro no sistema de adoção.
+// Herda de Animal e define a espécie como "Cachorro".
+public class Cachorro extends Animal {
+
+    // Construtor
+    public Cachorro(String nome, int idade, String porte, LocalDate dataEntrada) {
+        super(nome, idade, "Cachorro", porte, dataEntrada);
+    }
+
+    // Exibe um resumo das informações do cachorro.
+    @Override
+    public void imprimirResumo() {
+        System.out.println("Cachorro: " + getNome() + ", Idade: " + getIdade() + ", Porte: " + getPorte());
+    }
+}
+
+--------------
+
+// Gato.java
+
+package entidades;
+
+import abstratas.Animal;
+import java.time.LocalDate;
+
+// Classe que representa um gato no sistema de adoção.
+// Herda de Animal e define a espécie como "Gato".
+public class Gato extends Animal {
+
+    // Construtor
+    public Gato(String nome, int idade, String porte, LocalDate dataEntrada) {
+        super(nome, idade, "Gato", porte, dataEntrada);
+    }
+
+    // Exibe um resumo das informações do gato.
+    @Override
+    public void imprimirResumo() {
+        System.out.println("Gato: " + getNome() + ", Idade: " + getIdade() + ", Porte: " + getPorte());
+    }
+}
+
+--------------
+
+// Pessoa.java
+
+package entidades;
+
+// Importação da interface Imprimivel
+import interfaces.Imprimivel;
+
+public class Pessoa implements Imprimivel {
+
+    // Atributos
+    private String nome;
+    private String cpf;
+    private String telefone;
+
+    // Construtor
+    public Pessoa(String nome, String cpf, String telefone) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+    }
+
+    // Getters e Setters
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+    
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    @Override
+    public String toString() {
+        return "Nome: " + nome + ", CPF: " + cpf + ", Telefone: " + telefone;
+    }
+    // Exibe as informações da pessoa.
+    @Override
+    public void imprimirResumo() {
+        System.out.println("Nome: " + nome + ", CPF: " + cpf + ", Telefone: " + telefone);
+    }
+}
+
+--------------
+
+// Imprimível.java
+
+package interfaces;
+
+// Interface que define um contrato para classes que podem imprimir um resumo de seus dados.
+public interface Imprimivel {
+    void imprimirResumo();
+}
