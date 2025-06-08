@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 
 //  Classe abstrata que representa um animal no sistema de adoção.
 public abstract class Animal implements Imprimivel {
+
+    // Atributos
     private String nome;
     private int idade;
     private String especie;
@@ -15,8 +17,7 @@ public abstract class Animal implements Imprimivel {
     private LocalDate dataEntrada;
     private boolean adotado;
 
-    // Construtor da classe Animal.
-
+    // Construtor
     public Animal(String nome, int idade, String especie, String porte, LocalDate dataEntrada) {
         this.nome = nome;
         this.idade = idade;
@@ -26,6 +27,7 @@ public abstract class Animal implements Imprimivel {
         this.adotado = false;
     }
 
+    // Getters e Setters
     public String getNome() {
         return nome;
     }
@@ -74,7 +76,7 @@ public abstract class Animal implements Imprimivel {
         this.adotado = adotado;
     }
 
-    // Retorna uma representação em texto do animal, com todos os seus dados.
+    // Retorna os dados do animal
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

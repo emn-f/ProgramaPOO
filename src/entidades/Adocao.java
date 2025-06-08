@@ -1,24 +1,24 @@
 package entidades;
 
-// Importações da interface, da classe abstrata e outras classes para formatação das datas
+// Importações da interface, da classe abstrata Aniaml e outras classes para formatação das datas
 import interfaces.Imprimivel;
 import abstratas.Animal;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-//  Class representa o registro de uma adoção de animal, armazenando informações sobre o animal adotado, a pessoa adotante e a data da adoção. * Armazena o animal adotado, a pessoa adotante e a data da adoção.
+// Classe representa o registro de uma adoção de animal. Armazena o animal adotado, a pessoa adotante e a data da adoção.
 
 public class Adocao implements Imprimivel {
 
+    // Atributos
     private Animal animal;
     private Pessoa adotante;
     private LocalDate dataAdocao;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // Construtor da classe Adocao que recebe um animal, um adotante, a data da
-    // adoção e define o animal como adotado.
+    // Construtor
     public Adocao(Animal animal, Pessoa adotante, LocalDate dataAdocao) {
         this.animal = animal;
         this.adotante = adotante;
@@ -26,7 +26,7 @@ public class Adocao implements Imprimivel {
         this.animal.setAdotado(true);
     }
 
-    // Getters e Setters para acessar e modificar os atributos da classe
+    // Getters e Setters
     public Animal getAnimal() {
         return animal;
     }
@@ -51,7 +51,7 @@ public class Adocao implements Imprimivel {
         this.dataAdocao = dataAdocao;
     }
 
-    // Método toString que retorna uma representação em string da adoção.
+    // Método toString que retorna os dados da adoção.
     @Override
     public String toString() {
         return "Adocao: " + "Animal=" + animal.getNome() + ", Adotante=" + adotante.getNome() + ", Data de adoção="
