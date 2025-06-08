@@ -1,8 +1,11 @@
+package aplicacao;
+
 import abstratas.Animal;
 import entidades.Adocao;
 import entidades.Cachorro;
 import entidades.Gato;
 import entidades.Pessoa;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -34,7 +37,7 @@ public class Programa {
             System.out.println("4. Realizar Adoção");
             System.out.println("5. Listar Adoções");
             System.out.println("6. Alterar Dados do Animal");
-            System.out.println("7. Alterar Dados do Animal");
+            System.out.println("7. Alterar Dados da Pessoa");
             System.out.println("8. Listar Pessoas");
             System.out.println("9. Remover Pessoa");
             System.out.println("10. Remover Animal");
@@ -133,19 +136,25 @@ public class Programa {
 
     // Método responsável por alterar os dados de um animal cadastrado
     private static void alterarDadosAnimal() {
-        System.out.println("\n--- Alterar Dados do Animal ---");
+        Integer escolha, novaIdade;
+        Animal animalEscolhido;
+        String novoNome, idadeStr, novoPorte;
 
+        System.out.println("\n--- Alterar Dados do Animal ---");
+        
+
+        // Sai do métedo se não houver animais cadastrados
         if (animais.isEmpty()) {
             System.out.println("Não existem animais cadastrados");
         return;
         }
-        
+
+        // Lista os animais cadastrados e pergunta ao usuário qual ele quer alterar
         for (int i = 0; i < animais.size(); i++) {
             System.out.println((i + 1) + " - " + animais.get(i));
         }
 
         System.out.print("\n Escolha o número do animal que deseja alterar: ");
-        int escolha;
         try {
             escolha = Integer.parseInt(in.nextLine());
             if (escolha < 1 || escolha > animais.size()) {
@@ -156,49 +165,48 @@ public class Programa {
             System.out.println("Por favor, digite um número válido.");
             return;
         }
-
-        Animal animalEscolhido = animais.get(escolha - 1);
+        // Se o animal escolhido já foi adotado, não permite a alteração
+        animalEscolhido = animais.get(escolha - 1);
         if (animalEscolhido.getAdotado()) {
             System.out.println("\n Não é possível alterar os dados de um animal já adotado.");
             return;
         }
 
+        // Exibe os dados atuais do animal
         System.out.println("\n Dados atuais do animal:");
         System.out.println(animalEscolhido);
-
-         System.out.println("\n Digite os novos dados (ou pressione Enter para manter o valor atual):");
-
-         
-        System.out.print("Novo nome [" + animalEscolhido.getNome() + "]: ");
-        String novoNome = in.nextLine();
+        
+        // Pergunta ao usuário quais dados ele quer alterar
+        System.out.println("\n Digite os novos dados (ou pressione Enter para manter o valor atual):");
+        System.out.print("Novo nome: ");
+        novoNome = in.nextLine();
         if (!novoNome.isEmpty()) {
             animalEscolhido.setNome(novoNome);
         }
-
-        System.out.print("Nova idade [" + animalEscolhido.getIdade() + "]: ");
-        String idadeStr = in.nextLine();
+        System.out.print("Nova idade: ");
+        idadeStr = in.nextLine();
         if (!idadeStr.isEmpty()) {
             try {
-                int novaIdade = Integer.parseInt(idadeStr);
+                novaIdade = Integer.parseInt(idadeStr);
                 if (novaIdade >= 0) {
                     animalEscolhido.setIdade(novaIdade);
                 } else {
-                    System.out.println("Idade inválida, mantendo idade atual");
+                    System.out.println("Idade inválida. Idade atual será mantida");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Idade inválida, mantendo idade atual");
+                System.out.println("Idade inválida. Idade atual será mantida");
             }
         }
 
         System.out.print("Novo porte (Pequeno/Médio/Grande) [" + animalEscolhido.getPorte() + "]: ");
-        String novoPorte = in.nextLine();
+        novoPorte = in.nextLine();
         if (!novoPorte.isEmpty()) {
             if (novoPorte.equalsIgnoreCase("Pequeno") || 
                 novoPorte.equalsIgnoreCase("Médio") || 
                 novoPorte.equalsIgnoreCase("Grande")) {
                 animalEscolhido.setPorte(novoPorte);
             } else {
-                System.out.println("Porte inválido, mantendo porte atual");
+                System.out.println("Porte inválido. Porte atual será mantido.");
             }
         }
 
@@ -211,6 +219,7 @@ public class Programa {
     private static void listarAnimaisDisponiveis() {
         boolean encontrou = false;
         
+        // Exibe cada animal cadastrado. Se não houver, exibe uma mensagem informando que não há animais disponíveis.
         System.out.println("\n--- Animais Disponíveis ---");
         for (Animal animal : animais) {
             if (!animal.getAdotado()) {
@@ -218,7 +227,6 @@ public class Programa {
                 encontrou = true;
             }
         }
-
         if (!encontrou) {
             System.out.println("Nenhum animal disponível para adoção.");
         }
@@ -227,33 +235,39 @@ public class Programa {
     // Método responsável por cadastrar uma nova pessoa
     private static void cadastrarPessoa() {
         String nome, cpf, telefone;
-
+        
         System.out.print("Nome: ");
         nome = in.nextLine();
         System.out.print("CPF: ");
         cpf = in.nextLine();
         System.out.print("Telefone: ");
         telefone = in.nextLine();
-
+        
         pessoas.add(new Pessoa(nome, cpf, telefone));
         System.out.println("Pessoa cadastrada com sucesso!");
     }
-
+    
     // Método responsável por alterar os dados de uma pessoa cadastrada
     private static void alterarDadosPessoa() {
-        System.out.println("\n--- Alterar Dados da Pessoa ---");
+        Integer escolha;
+        Pessoa pessoaEscolhida;
+        boolean temAdocao, cpfExiste;
+        String novoCpf, novoTelefone;
 
+        System.out.println("\n--- Alterar Dados da Pessoa ---");
+        
+        // Verifica se há pessoas cadastradas antes de prosseguir
         if (pessoas.isEmpty()) {
             System.out.println("Não existem pessoas cadastradas");
             return;
         }
-        
+        // Lista as pessoas cadastradas e pergunta ao usuário qual ele quer alterar
         for (int i = 0; i < pessoas.size(); i++) {
             System.out.println((i + 1) + " - " + pessoas.get(i));
         }
-
+        
         System.out.print("Escolha o número da pessoa que deseja alterar: ");
-        int escolha;
+        
         try {
             escolha = Integer.parseInt(in.nextLine());
             if (escolha < 1 || escolha > pessoas.size()) {
@@ -265,20 +279,17 @@ public class Programa {
             return;
         }
 
-        Pessoa pessoaEscolhida = pessoas.get(escolha - 1);
+        pessoaEscolhida = pessoas.get(escolha - 1);
 
         // Verifica se a pessoa tem adoções antes de permitir alterações
-        boolean temAdocao = adocoes.stream()
-            .anyMatch(adocao -> adocao.getAdotante().getCpf().equals(pessoaEscolhida.getCpf()));
+        temAdocao = adocoes.stream().anyMatch(adocao -> adocao.getAdotante().getCpf().equals(pessoaEscolhida.getCpf()));
 
-
+        // Na inclusão de CPF, verifica se já existe outro cadastrado
         if (!temAdocao) {
-            System.out.print("Novo CPF [" + pessoaEscolhida.getCpf() + "]: ");
-            String novoCpf = in.nextLine();
+            System.out.print("Novo CPF: ");
+            novoCpf = in.nextLine();
             if (!novoCpf.isEmpty()) {
-                boolean cpfExiste = pessoas.stream()
-                    .anyMatch(p -> p.getCpf().equals(novoCpf) && p != pessoaEscolhida);
-                
+                cpfExiste = pessoas.stream().anyMatch(p -> p.getCpf().equals(novoCpf) && p != pessoaEscolhida);               
                 if (cpfExiste) {
                     System.out.println("CPF já cadastrado, mantendo CPF atual");
                 } else {
@@ -289,8 +300,8 @@ public class Programa {
             System.out.println("CPF não pode ser alterado pois a pessoa possui adoções registradas");
         }
 
-        System.out.print("Novo telefone [" + pessoaEscolhida.getTelefone() + "]: ");
-        String novoTelefone = in.nextLine();
+        System.out.print("Novo telefone: ");
+        novoTelefone = in.nextLine();
         if (!novoTelefone.isEmpty()) {
             pessoaEscolhida.setTelefone(novoTelefone);
         }
@@ -330,8 +341,10 @@ public class Programa {
 
     // Método responsável por buscar uma pessoa pelo CPF
     private static void buscarPessoaPorCpf() {
+        String cpfString;
+
         System.out.println("\n--- Digite o CPF (apenas os números) ---");
-        String cpfString = in.nextLine().trim();
+        cpfString = in.nextLine().trim();
 
         for (Pessoa pessoa : pessoas) {
             if (pessoa.getCpf().equals(cpfString)) {
@@ -345,19 +358,25 @@ public class Programa {
 
     // Método responsável por remover uma pessoa cadastrada
     private static void removerPessoas() {
+        Integer escolha;
+        Pessoa pessoaEscolhida;
+        boolean temAdocao;
+        String confirmacao;
+        
         System.out.println("\n--- Remover Pessoa ---");
 
+        // Verifica se há pessoas cadastradas antes de prosseguir
         if (pessoas.isEmpty()) {
             System.out.println("Não existem pessoas cadastradas");
             return;
         }
 
+        // Lista as pessoas cadastradas e pergunta ao usuário qual ele quer remover
         for (int i = 0; i < pessoas.size(); i++) {
             System.out.println((i + 1) + " - " + pessoas.get(i));
         }
 
         System.out.print("Escolha o número da pessoa que deseja remover: ");
-        int escolha;
         try {
             escolha = Integer.parseInt(in.nextLine());
             if (escolha < 1 || escolha > pessoas.size()) {
@@ -369,8 +388,10 @@ public class Programa {
             return;
         }
 
-        Pessoa pessoaEscolhida = pessoas.get(escolha - 1);
-        boolean temAdocao = adocoes.stream()
+        pessoaEscolhida = pessoas.get(escolha - 1);
+
+        // Se a pessoa escolhida tem adoções registradas, não permite a remoção
+        temAdocao = adocoes.stream()
             .anyMatch(adocao -> adocao.getAdotante().getCpf().equals(pessoaEscolhida.getCpf()));
 
         if (temAdocao) {
@@ -378,8 +399,9 @@ public class Programa {
             return;
         }
 
+        // Confirmação antes de remover a pessoa
         System.out.print("\n Tem certeza que deseja remover a pessoa " + pessoaEscolhida.getNome() + "? (S/N): ");
-        String confirmacao = in.nextLine().trim().toUpperCase();
+        confirmacao = in.nextLine().trim().toUpperCase();
 
         if (confirmacao.equalsIgnoreCase("S")) {
             pessoas.remove(pessoaEscolhida);
@@ -391,6 +413,11 @@ public class Programa {
 
     // Método responsável por remover um animal cadastrado    
     private static void removerAnimal() {
+        Integer escolha;
+        Animal animalEscolhido;
+        boolean temAdocao;
+        String confirmacao;
+
         System.out.println("\n--- Remover Animal ---");
 
         if (animais.isEmpty()) {
@@ -402,8 +429,8 @@ public class Programa {
             System.out.println((i + 1) + " - " + animais.get(i));
         }
 
+        // Lista os animais cadastrados e pergunta ao usuário qual ele quer remover
         System.out.print("\n Escolha o número da animais que deseja remover: ");
-        int escolha;
         try {
             escolha = Integer.parseInt(in.nextLine());
             if (escolha < 1 || escolha > animais.size()) {
@@ -415,8 +442,9 @@ public class Programa {
             return;
         }
 
-        Animal animalEscolhido = animais.get(escolha - 1);
-        boolean temAdocao = adocoes.stream()
+        // Se o animal escolhido já foi adotado, não permite a remoção
+        animalEscolhido = animais.get(escolha - 1);
+        temAdocao = adocoes.stream()
             .anyMatch(adocao -> adocao.getAnimal().getAdotado());
 
         if (temAdocao) {
@@ -425,7 +453,7 @@ public class Programa {
         }
 
         System.out.print("Tem certeza que deseja remover o animal " + animalEscolhido.getNome() + "? (S/N): ");
-        String confirmacao = in.nextLine().trim().toUpperCase();
+        confirmacao = in.nextLine().trim().toUpperCase();
 
         if (confirmacao.equalsIgnoreCase("S")) {
             animais.remove(animalEscolhido);
@@ -438,7 +466,7 @@ public class Programa {
     // Método responsável por realizar a adoção de um animal
     private static void realizarAdocao() {
         Integer escolha;
-        String cpfAdotante;
+        String cpfAdotante, cpfPessoa;
         
         ArrayList<Animal> disponiveis = new ArrayList<>();
         
@@ -446,23 +474,24 @@ public class Programa {
         Adocao adocao;
         Animal animalEscolhido;
 
-
+        
         System.out.print("\n Informe o CPF do adotante: ");
         cpfAdotante = in.nextLine().replaceAll("[^\\d]", "");
-
+        // Verifica se o CPF informado é válido
         for (Pessoa pessoa : pessoas) {
-            String cpfPessoa = pessoa.getCpf().replaceAll("[^\\d]", "");
+            cpfPessoa = pessoa.getCpf().replaceAll("[^\\d]", "");
             if (cpfPessoa.equals(cpfAdotante)) {
                 adotante = pessoa;
                 break;
             }
         }
-
+        // Se não encontrar a pessoa, pede para o usuário cadastrar primeiro
         if (adotante == null) {
             System.out.println("\n Pessoa não encontrada, cadastre primeiro");
             return;
         }
 
+        // Verifica se há animais disponíveis para adoção
         for (Animal animal : animais) {
             if (!animal.getAdotado()) {
                 disponiveis.add(animal);
@@ -473,12 +502,12 @@ public class Programa {
             System.out.println("Não há animais disponíveis para adoção");
             return;
         }
-
+        // Lista os animais disponíveis para adoção
         System.out.println("\n--- Animais Disponíveis ---");
         for (int i = 0; i < disponiveis.size(); i++) {
             System.out.println((i + 1) + " - " + disponiveis.get(i));
         }
-
+        // Pede ao usuário para escolher um animal e realiza a adoção
         System.out.print("Escolha o número do animal que deseja adotar: ");
         escolha = Integer.parseInt(in.nextLine());
 
