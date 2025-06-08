@@ -33,7 +33,7 @@ public class Pessoa implements Imprimivel {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
-
+    
     public String getTelefone() {
         return telefone;
     }
@@ -42,6 +42,10 @@ public class Pessoa implements Imprimivel {
         this.telefone = telefone;
     }
 
+    @Override
+    public String toString() {
+        return "Nome: " + nome + ", CPF: " + cpf + ", Telefone: " + telefone;
+    }
     // Exibe as informações da pessoa.
     @Override
     public void imprimirResumo() {
