@@ -224,8 +224,7 @@ public class Programa {
         System.out.println("\n--- Animais Disponíveis ---");
         for (Animal animal : animais) {
             if (!animal.getAdotado()) {
-                System.out.println(animal);
-                encontrou = true;
+               animal.toString();
             }
         }
         if (!encontrou) {
@@ -320,19 +319,19 @@ public class Programa {
             System.out.println("Nenhuma pessoa cadastrada.");
         } else {
             for (Pessoa pessoa : pessoas) {
-                System.out.println(pessoa);
+                pessoa.toString();
             }
         }
     }
 
     // Método responsável por buscar um animal pelo nome
     private static void buscarAnimalPorNome() {
-        System.out.println("\n--- Digite o nome do animal ---");
         String nomeAnimal = in.nextLine().trim();
+        System.out.println("\n--- Digite o nome do animal ---");
 
         for (Animal animal : animais) {
             if (animal.getNome().equalsIgnoreCase(nomeAnimal)) {
-                System.out.println("Animal encontrado: " + animal);
+                animal.toString();
                 return;
             }
         }
@@ -349,7 +348,7 @@ public class Programa {
 
         for (Pessoa pessoa : pessoas) {
             if (pessoa.getCpf().equals(cpfString)) {
-                System.out.println("Pessoa encontrada: " + pessoa);
+                pessoa.toString();
                 return;
             }
         }
@@ -422,7 +421,7 @@ public class Programa {
         System.out.println("\n--- Remover Animal ---");
 
         if (animais.isEmpty()) {
-            System.out.println("\n Não existem animais cadastradas");
+            System.out.println("\n Não existem animais cadastrados.");
             return;
         }
 
@@ -446,9 +445,8 @@ public class Programa {
         // Se o animal escolhido já foi adotado, não permite a remoção
         animalEscolhido = animais.get(escolha - 1);
         temAdocao = adocoes.stream()
-                .anyMatch(adocao -> adocao.getAnimal().getAdotado());
-
-        if (temAdocao) {
+                .anyMatch(adocao -> adocao.getAnimal() == animalEscolhido);
+        if (animalEscolhido.getAdotado() || temAdocao) {
             System.out.println("Não é possível remover o animal pois ele já foi adotado");
             return;
         }
@@ -530,7 +528,7 @@ public class Programa {
             System.out.println("Nenhuma adoção realizada.");
         } else {
             for (Adocao adocao : adocoes) {
-                System.out.println(adocao);
+               adocao.imprimirResumo();
             }
         }
     }
