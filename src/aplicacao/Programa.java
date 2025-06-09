@@ -122,7 +122,6 @@ public class Programa {
                 System.out.println("Data inválida. Utilize o formato DD/MM/AAAA.");
             }
         }
-        
 
         if (tipo == 1) {
             animais.add(new Cachorro(nome, idade, porte, dataEntrada));
@@ -133,6 +132,9 @@ public class Programa {
         } else {
             System.out.println("Tipo inválido.");
         }
+
+        sair();
+
     }
 
     // Método responsável por alterar os dados de um animal cadastrado
@@ -213,6 +215,9 @@ public class Programa {
         System.out.println("\nDados alterados com sucesso!");
         System.out.println("Novos dados do animal:");
         System.out.println(animalEscolhido);
+
+        sair();
+
     }
 
     // Método responsável por listar os animais disponíveis para adoção
@@ -224,12 +229,15 @@ public class Programa {
         System.out.println("\n--- Animais Disponíveis ---");
         for (Animal animal : animais) {
             if (!animal.getAdotado()) {
-               animal.toString();
+                System.out.println(animal);
+                encontrou = true;
             }
         }
         if (!encontrou) {
             System.out.println("Nenhum animal disponível para adoção.");
         }
+
+        sair();
     }
 
     // Método responsável por cadastrar uma nova pessoa
@@ -245,6 +253,9 @@ public class Programa {
 
         pessoas.add(new Pessoa(nome, cpf, telefone));
         System.out.println("Pessoa cadastrada com sucesso!");
+
+        sair();
+
     }
 
     // Método responsável por alterar os dados de uma pessoa cadastrada
@@ -310,6 +321,8 @@ public class Programa {
         System.out.println("Novos dados da pessoa:");
         System.out.println(pessoaEscolhida);
 
+        sair();
+
     }
 
     // Método responsável por listar as pessoas cadastradas
@@ -319,24 +332,31 @@ public class Programa {
             System.out.println("Nenhuma pessoa cadastrada.");
         } else {
             for (Pessoa pessoa : pessoas) {
-                pessoa.toString();
+                System.out.println(pessoa);
             }
         }
+
+        sair();
+
     }
 
     // Método responsável por buscar um animal pelo nome
     private static void buscarAnimalPorNome() {
-        String nomeAnimal = in.nextLine().trim();
+        String nomeAnimal;
         System.out.println("\n--- Digite o nome do animal ---");
+        nomeAnimal = in.nextLine().trim();
 
         for (Animal animal : animais) {
             if (animal.getNome().equalsIgnoreCase(nomeAnimal)) {
-                animal.toString();
+                System.out.println("Animal encontrado: " + animal);
                 return;
             }
         }
 
         System.out.println("Nenhum animal encontrado com o nome: " + nomeAnimal);
+
+        sair();
+
     }
 
     // Método responsável por buscar uma pessoa pelo CPF
@@ -348,12 +368,15 @@ public class Programa {
 
         for (Pessoa pessoa : pessoas) {
             if (pessoa.getCpf().equals(cpfString)) {
-                pessoa.toString();
+                System.out.println("Pessoa encontrada: " + pessoa);
                 return;
             }
         }
 
         System.out.println("Nenhuma pessoa encontrada com este CPF: " + cpfString);
+
+        sair();
+
     }
 
     // Método responsável por remover uma pessoa cadastrada
@@ -409,6 +432,9 @@ public class Programa {
         } else {
             System.out.println("\n Remoção cancelada.");
         }
+
+        sair();
+
     }
 
     // Método responsável por remover um animal cadastrado
@@ -460,6 +486,9 @@ public class Programa {
         } else {
             System.out.println("Remoção cancelada.");
         }
+
+        sair();
+
     }
 
     // Método responsável por realizar a adoção de um animal
@@ -519,6 +548,9 @@ public class Programa {
         adocao = new Adocao(animalEscolhido, adotante, LocalDate.now());
         adocoes.add(adocao);
         System.out.println("\n Adoção realizada com sucesso!");
+
+        sair();
+
     }
 
     // Método responsável por listar as adoções realizadas
@@ -528,8 +560,25 @@ public class Programa {
             System.out.println("Nenhuma adoção realizada.");
         } else {
             for (Adocao adocao : adocoes) {
-               adocao.imprimirResumo();
+                adocao.imprimirResumo();
             }
+        }
+        sair();
+
+    }
+
+    public static void sair() {
+        String resposta;
+        System.out.println("");
+        System.out.println("Deseja voltar ao menu? (S/N)");
+        resposta = in.nextLine().trim().toUpperCase();
+        if (resposta.equals("S")) {
+            return;
+        } else if (resposta.equals("N")) {
+            System.out.println("Saindo do programa.");
+            System.exit(0);
+        } else {
+            System.out.println("Opção inválida. Voltando ao menu.");
         }
     }
 
